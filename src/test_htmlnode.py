@@ -1,6 +1,8 @@
 import unittest
 
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from textnode import TextNode, TextType
+from text_node_to_html_node import text_node_to_html_node
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -52,7 +54,7 @@ class TestLeafNode(unittest.TestCase):
     
     def test_leaf_to_html_empty_value(self):
         node = LeafNode("p", "")
-        self.assertRaises(ValueError)
+        self.assertEqual(node.to_html(),"<p></p>")
 
     def test_leaf_to_html_nonstring_value(self):
         node = LeafNode("p", 8)
@@ -120,14 +122,16 @@ class TestParentNode(unittest.TestCase):
                 LeafNode("b", "Bold text")
             ]
         )
-        self.assertRaises(ValueError)
+        with self.assertRaises(ValueError):
+            html = node.to_html()
     
     def test_no_children(self):
         node = ParentNode(
             "b",
             None
         )
-        self.assertRaises(ValueError)
+        with self.assertRaises(ValueError):
+            html = node.to_html()
 
     def test_untagged_children(self):
         node = ParentNode(
@@ -198,7 +202,51 @@ class TestParentNode(unittest.TestCase):
         )
         self.assertEqual(node.to_html(), '<b one="1" two="2">Bold text</b>')
     
+class TestTextNodeToHTMLNode(unittest.TestCase):
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode(None, "This is a text node")
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+
+    def test_nontextnode_node(self):
+        node = "This is not a text node"
+        with self.assertRaises(ValueError):
+            html_node = text_node_to_html_node(node)
+
+    def test_invalid_texttype(self):
+        with self.assertRaises(ValueError):
+            node = TextNode("invalid text type", None)
+      
+    def test_bold(self):
+        node = TextNode("bold text", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode("b", "bold text")
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
     
+    def test_italic(self):
+        node = TextNode("italic text", TextType.ITALIC)
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode("i", "italic text")
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+    
+    def test_code(self):
+        node = TextNode("code text", TextType.CODE)
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode("code", "code text")
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+    
+    def test_link(self):
+        node = TextNode("anchor text", TextType.LINK, "google.com")
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode("a", "anchor text", {"href": "google.com"})
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+    
+    def test_image(self):
+        node = TextNode("an image", TextType.IMAGE, "image.jpg")
+        html_node = text_node_to_html_node(node)
+        expected_result = LeafNode("img", "", {"src":"image.jpg", "alt":"an image"})
+        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
 
 if __name__ == "__main__":
     unittest.main()
