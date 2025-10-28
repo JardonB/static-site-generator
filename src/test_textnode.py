@@ -1,8 +1,11 @@
 import unittest
 
 from textnode import TextNode, TextType
-from extract_markdown import extract_markdown_links, extract_markdown_images
-from text_to_textnodes import text_to_textnodes
+from inline_markdown import (
+    extract_markdown_links, 
+    extract_markdown_images,
+    text_to_textnodes,
+)
 
 
 class TestTextNode(unittest.TestCase):

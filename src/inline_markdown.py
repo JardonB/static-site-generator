@@ -1,5 +1,42 @@
+import re
 from textnode import TextNode, TextType
-from extract_markdown import extract_markdown_images, extract_markdown_links
+
+def text_to_textnodes(text):
+    node_list = [TextNode(text, TextType.TEXT)]
+
+    #split links and images
+    node_list = split_nodes_links(node_list)
+    node_list = split_nodes_images(node_list)
+
+    #split other text types
+    node_list = split_nodes_delimiter(node_list, "**", TextType.BOLD)
+    node_list = split_nodes_delimiter(node_list, "_", TextType.ITALIC)
+    node_list = split_nodes_delimiter(node_list, "`", TextType.CODE)
+
+    return node_list
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    node_list = []
+    for node in old_nodes:
+        if not node.text_type == TextType.TEXT:
+            node_list.append(node)
+        else:
+            parts = node.text.split(delimiter)
+
+            if len(parts) == 1:
+                node_list.append(node)
+                continue
+            elif len(parts) % 2 == 0:
+                raise Exception(f"for node: {node} unmatched delimiter: {delimiter}")
+
+            for i in range(len(parts)):
+                if parts[i] == "":
+                    continue
+                elif i % 2 == 0:
+                    node_list.append(TextNode(parts[i], TextType.TEXT))
+                else:
+                    node_list.append(TextNode(parts[i], text_type))
+    return node_list
 
 def split_nodes_images(old_nodes):
     node_list = []
@@ -46,4 +83,13 @@ def split_nodes_links(old_nodes):
         if node_text != "":
             node_list.append(TextNode(node_text, TextType.TEXT))
     return node_list
-        
+
+def extract_markdown_images(text):
+    pattern = r"!\[([^\[\]]*)\]\(((?:[^()\s]|(?:\([^()]*\)))*)\)"
+    matches = re.findall(pattern, text)
+    return matches
+
+def extract_markdown_links(text):
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(((?:[^()\s]|(?:\([^()]*\)))*)\)"
+    matches = re.findall(pattern, text)
+    return matches
