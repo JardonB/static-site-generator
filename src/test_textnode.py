@@ -2,6 +2,7 @@ import unittest
 
 from textnode import TextNode, TextType
 from extract_markdown import extract_markdown_links, extract_markdown_images
+from text_to_textnodes import text_to_textnodes
 
 
 class TestTextNode(unittest.TestCase):
@@ -103,6 +104,40 @@ class TestExtractFromMD(unittest.TestCase):
     def test_parentheses_in_url(self):
         self.assertListEqual([("a","https://ex.com/i_(1).png")], extract_markdown_images("![a](https://ex.com/i_(1).png)"))
         self.assertListEqual([("x","https://ex.com/path_(v2)")], extract_markdown_links("[x](https://ex.com/path_(v2))"))
+
+class TestTextToTextNode(unittest.TestCase):
+    def test_text_to_textnode(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        new_nodes = text_to_textnodes(text)
+        expected_result = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+        self.assertEqual(new_nodes, expected_result)
+
+    def test_plain_text(self):
+        text = "This is plain text"
+        new_nodes = text_to_textnodes(text)
+        expected_result = [
+            TextNode("This is plain text", TextType.TEXT),
+        ]
+        self.assertEqual(new_nodes, expected_result)
     
+    def test_only_whitespace(self):
+        text = "   "
+        new_nodes = text_to_textnodes(text)
+        expected_result = [
+            TextNode("   ", TextType.TEXT),
+        ]
+        self.assertEqual(new_nodes, expected_result)
+
 if __name__ == "__main__":
     unittest.main()
