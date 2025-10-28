@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 class TextType(Enum):
     TEXT = "text"
@@ -22,4 +23,4 @@ class TextNode():
         return False
     
     def __repr__(self):
-        return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+        return f"TextNode(text=\"{self.text}\", value={self.text_type.value}, url={self.url})"
