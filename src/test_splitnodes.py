@@ -2,9 +2,10 @@ import unittest
 
 from textnode import TextNode, TextType
 from split_nodes_delimiter import split_nodes_delimiter
+from split_nodes import split_nodes_images, split_nodes_links
 
 
-class TestSplitNode(unittest.TestCase):
+class TestSplitNodeDelimiter(unittest.TestCase):
     def test_split(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -60,6 +61,71 @@ class TestSplitNode(unittest.TestCase):
         ]
         self.assertEqual(new_nodes, expected_result)
 
+class TestSplitNodeImage(unittest.TestCase):
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_images([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode("second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"),
+            ],
+            new_nodes,
+        )
+
+    def test_split_no_image(self):
+        node = TextNode("This node does not contain an image", TextType.TEXT)
+        new_nodes = split_nodes_images([node])
+        self.assertListEqual([node], new_nodes)
+
+    def test_starts_with_image(self):
+        node = TextNode("![img](src) is an image", TextType.TEXT)
+        new_nodes = split_nodes_images([node])
+        self.assertListEqual(
+            new_nodes,
+            [
+                TextNode("img", TextType.IMAGE, "src"),
+                TextNode(" is an image", TextType.TEXT)
+            ]
+        )
+
+class TestSplitNodeLinks(unittest.TestCase):
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_links([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a link ", TextType.TEXT),
+                TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"),
+            ],
+            new_nodes,
+        )
+
+    def test_split_no_link(self):
+        node = TextNode("This node does not contain a link", TextType.TEXT)
+        new_nodes = split_nodes_links([node])
+        self.assertListEqual([node], new_nodes)
+
+    def test_starts_with_link(self):
+        node = TextNode("[link](src) is a link", TextType.TEXT)
+        new_nodes = split_nodes_links([node])
+        self.assertListEqual(
+            new_nodes,
+            [
+                TextNode("link", TextType.LINK, "src"),
+                TextNode(" is a link", TextType.TEXT)
+            ]
+        )
 
 if __name__ == "__main__":
     unittest.main()
