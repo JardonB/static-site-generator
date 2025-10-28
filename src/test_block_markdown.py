@@ -1,6 +1,8 @@
 import unittest
 from block_markdown import (
+    BlockType,
     markdown_to_blocks,
+    block_to_block_type,
 )
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -75,3 +77,94 @@ This is the same paragraph on a new line
         blocks = markdown_to_blocks(md)
         expected_result = []
         self.assertEqual(blocks, expected_result)
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_normal_paragraph(self):
+        block = "This is a\nparagraph"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_abnormal_paragraph(self):
+        block = "> This is also\n- A paragraph"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_heading(self):
+        block = "# This is a\n# heading"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.HEADING
+        self.assertEqual(block_type, expected_result)
+
+    def test_max_hashes(self):
+        block = "###### Is a heading"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.HEADING
+        self.assertEqual(block_type, expected_result)
+
+    def test_no_content_head(self):
+        block = "## "
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_if_boots_is_fucking_retarded(self):
+        block = "## \n##\n "
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_too_many_hashes(self):
+        block = "####### Not a heading"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_no_space_head(self):
+        block = "#No space"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_code(self):
+        block = "```for code in code_block:\n\tprint(code)```"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.CODE
+        self.assertEqual(block_type, expected_result)
+
+    def test_quote(self):
+        block = "> This is a\n>quote"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.QUOTE
+        self.assertEqual(block_type, expected_result)
+
+    def test_quote_missing_line(self):
+        block = "> This is\nnot a\n> quote"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_unordered_list(self):
+        block = "- one\n- two\n- three"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.UNORDERED_LIST
+        self.assertEqual(block_type, expected_result)
+
+    def test_unordered_list_missing_line(self):
+        block = "- one\n- two\n- three\n four"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
+
+    def test_ordered_list(self):
+        block = "1. one\n2. two\n3. three"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.ORDERED_LIST
+        self.assertEqual(block_type, expected_result)
+
+    def test_ordered_list_not_ordered(self):
+        block = "1. one\n2. two\n3. three\n5. five"
+        block_type = block_to_block_type(block)
+        expected_result = BlockType.PARAGRAPH
+        self.assertEqual(block_type, expected_result)
