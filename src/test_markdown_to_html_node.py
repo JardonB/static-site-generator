@@ -49,7 +49,17 @@ the **same** even with inline stuff
         html = markdown_to_html_node(md).to_html()
         expected_result = "<div><ul><li>One</li><li>Two</li><li>Three</li></ul></div>"
         self.assertEqual(html, expected_result)
-            
+              
+    def test_ul_inline_md(self):
+        md = """
+- One
+- _Two_
+- **Three**
+"""
+        html = markdown_to_html_node(md).to_html()
+        expected_result = "<div><ul><li>One</li><li><i>Two</i></li><li><b>Three</b></li></ul></div>"
+        self.assertEqual(html, expected_result)
+        
     def test_ol(self):
         md = """
 1. One
@@ -58,6 +68,16 @@ the **same** even with inline stuff
 """
         html = markdown_to_html_node(md).to_html()
         expected_result = "<div><ol><li>One</li><li>Two</li><li>Three</li></ol></div>"
+        self.assertEqual(html, expected_result)
+            
+    def test_ol_inline_md(self):
+        md = """
+1. One
+2. _Two_
+3. **Three**
+"""
+        html = markdown_to_html_node(md).to_html()
+        expected_result = "<div><ol><li>One</li><li><i>Two</i></li><li><b>Three</b></li></ol></div>"
         self.assertEqual(html, expected_result)
 
     def test_heading(self):

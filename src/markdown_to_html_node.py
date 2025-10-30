@@ -56,11 +56,11 @@ def block_to_quote(block):
     return ParentNode("blockquote", text_to_children("\n".join(stripped_lines)))
 
 def block_to_ol(block):
-    node_list = [LeafNode("li", line[3:]) for line in block.split("\n")]
+    node_list = [ParentNode("li", text_to_children(line[3:])) for line in block.split("\n")]
     return ParentNode("ol", node_list)
     
 def block_to_ul(block):
-    node_list = [LeafNode("li", line[2:]) for line in block.split("\n")]
+    node_list = [ParentNode("li", text_to_children(line[2:])) for line in block.split("\n")]
     return ParentNode("ul", node_list)
 
 def text_to_children(text):
