@@ -1,5 +1,10 @@
+from copy_static import copy_static
+
+public_path = "./public/"
+static_path = "./static/"
+
 def main():
-    print("hello world")
+    copy_static(static_path, public_path)
 
 
 if __name__ == "__main__":
