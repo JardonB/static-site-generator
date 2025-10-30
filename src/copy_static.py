@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(
     level=logging.INFO, 
     format="%(asctime)s %(levelname)s: %(message)s",
-    filename="logs/copy_static_log.log",
+    filename="logs/log.log",
     filemode="w"
 )
 
