@@ -8,8 +8,8 @@ content_path = "content"
 template_path = "template.html" 
 base_path = "/"
 
-if sys.argv[0]:
-    base_path = sys.argv[0]
+if len(sys.argv) >= 2:
+    base_path = sys.argv[1]
 
 def main():
     copy_static(static_path, dest_path)
