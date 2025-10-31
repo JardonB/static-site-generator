@@ -1,6 +1,9 @@
 import os, logging
 from markdown_to_html_node import markdown_to_html_node
 
+if not os.path.exists("logs"):
+    os.mkdir("logs")
+
 logging.basicConfig(
     level=logging.INFO, 
     format="%(asctime)s %(levelname)s: %(message)s",

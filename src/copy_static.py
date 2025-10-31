@@ -2,6 +2,9 @@ import os
 import shutil
 import logging
 
+if not os.path.exists("logs"):
+    os.mkdir("logs")
+
 logging.basicConfig(
     level=logging.INFO, 
     format="%(asctime)s %(levelname)s: %(message)s",
