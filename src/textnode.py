@@ -8,6 +8,7 @@ class TextType(Enum):
     CODE = "code"
     LINK = "link"
     IMAGE = "image"
+    QUOTE = "quote"
 
 class TextNode():
     def __init__(self, text, text_type, url=None):
@@ -25,7 +26,7 @@ class TextNode():
     def __repr__(self):
         return f"TextNode(text=\"{self.text}\", value={self.text_type.value}, url={self.url})"
     
-def text_node_to_html_node(node):
+def text_node_to_html_node(node, indents=[0,0]):
     if not isinstance(node, TextNode):
         raise ValueError("text_node_to_html_node(node): node must be a text node")
     
@@ -33,19 +34,19 @@ def text_node_to_html_node(node):
         raise ValueError("invalid text type")
     
     if node.text_type == TextType.TEXT:
-        return LeafNode(None, node.text)
+        return LeafNode(None, node.text, None, indents, inline=False)
     
     if node.text_type == TextType.BOLD:
-        return LeafNode("b", node.text)
+        return LeafNode("b", node.text, None, indents, inline=True)
     
     if node.text_type == TextType.ITALIC:
-        return LeafNode("i", node.text)
+        return LeafNode("i", node.text, None, indents, inline=True)
     
     if node.text_type == TextType.CODE:
-        return LeafNode("code", node.text)
+        return LeafNode("code", node.text, None, indents, inline=True)
     
     if node.text_type == TextType.LINK:
-        return LeafNode("a", node.text, {"href": node.url})
+        return LeafNode("a", node.text, {"href": node.url}, indents, inline=True)
     
     if node.text_type == TextType.IMAGE:
-        return LeafNode("img", "", {"src": node.url, "alt": node.text})
+        return LeafNode("img", "", {"src": node.url, "alt": node.text}, indents, inline=True)
