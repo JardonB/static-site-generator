@@ -65,7 +65,8 @@ def extract_title(markdown):
     
 def extract_template_indents(template_path): 
     content_line, first_indented_line = "", ""
-    indent_spaces, content_depth = 0, 0
+    indent_spaces = 0 #indent spaces is the number of spaces per indent
+    content_depth = 0 #content depth is the number of indents for the content
     with open(template_path, 'r', encoding="utf-8") as f:
         template = f.read()
 
