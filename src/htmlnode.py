@@ -34,7 +34,10 @@ class LeafNode(HTMLNode):
         if self.inline:
             if not self.tag:
                 return self.value
-            return f"<{self.tag}{html_props}>{self.value}</{self.tag}>"
+            if not self.self_closing:
+                return f"<{self.tag}{html_props}>{self.value}</{self.tag}>"
+            else:
+                return f"<{self.tag}{html_props}>{self.value}"
         else:
             if not self.tag:
                 return self.value

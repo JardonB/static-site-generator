@@ -53,4 +53,4 @@ def text_node_to_html_node(node, indents=[0,0]):
         return LeafNode("img", "", {"src": node.url, "alt": node.text}, indents, inline=True)
     
     if node.text_type == TextType.HORIZONTAL_LINE:
-        return LeafNode("hr", "", indents=indents, self_closing=True)
+        return LeafNode("hr", "", indents=indents, inline=True, self_closing=True)
