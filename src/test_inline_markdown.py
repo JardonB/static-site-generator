@@ -64,6 +64,16 @@ class TestSplitNodeDelimiter(unittest.TestCase):
             TextNode(" word", TextType.TEXT)
         ]
         self.assertEqual(new_nodes, expected_result)
+        
+    def test_split_horizontal_line(self):
+        node = TextNode("This is text split by a\n---\nhorizontal line", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "\n---\n", TextType.HORIZONTAL_LINE, match_req=False)
+        expected_result = [
+            TextNode("This is text split by a", TextType.TEXT),
+            TextNode("", TextType.HORIZONTAL_LINE),
+            TextNode("horizontal line", TextType.TEXT)
+        ]
+        self.assertListEqual(new_nodes, expected_result)
 
 class TestSplitNodeImage(unittest.TestCase):
     def test_split_images(self):

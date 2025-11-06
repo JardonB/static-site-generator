@@ -12,10 +12,11 @@ def text_to_textnodes(text):
     node_list = split_nodes_delimiter(node_list, "**", TextType.BOLD)
     node_list = split_nodes_delimiter(node_list, "_", TextType.ITALIC)
     node_list = split_nodes_delimiter(node_list, "`", TextType.CODE)
+    node_list = split_nodes_delimiter(node_list, "---", TextType.HORIZONTAL_LINE, match_req=False)
 
     return node_list
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
+def split_nodes_delimiter(old_nodes, delimiter, text_type, match_req=True):
     node_list = []
     for node in old_nodes:
         if not node.text_type == TextType.TEXT:
@@ -26,16 +27,26 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             if len(parts) == 1:
                 node_list.append(node)
                 continue
-            elif len(parts) % 2 == 0:
+            elif len(parts) % 2 == 0 and match_req:
                 raise Exception(f"for node: {node} unmatched delimiter: {delimiter}")
 
-            for i in range(len(parts)):
-                if parts[i] == "":
-                    continue
-                elif i % 2 == 0:
-                    node_list.append(TextNode(parts[i], TextType.TEXT))
-                else:
-                    node_list.append(TextNode(parts[i], text_type))
+            if match_req:
+                for i in range(len(parts)):
+                    if parts[i] == "":
+                        continue
+                    elif i % 2 == 0:
+                        node_list.append(TextNode(parts[i], TextType.TEXT))
+                    else:
+                        node_list.append(TextNode(parts[i], text_type))
+            else:
+                for i in range(len(parts)):
+                    if parts[i] == "":
+                        continue
+                    elif i != len(parts)-1: #elif i is not last index
+                        node_list.append(TextNode(parts[i], TextType.TEXT))
+                        node_list.append(TextNode("", text_type))
+                    else:
+                        node_list.append(TextNode(parts[i], TextType.TEXT))
     return node_list
 
 def split_nodes_images(old_nodes):

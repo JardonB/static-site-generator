@@ -1,11 +1,12 @@
 class HTMLNode():
-    def __init__(self, tag=None, value=None, children=None, props=None, indents=[0,0], inline=False):
+    def __init__(self, tag=None, value=None, children=None, props=None, indents=[0,0], inline=False, self_closing=False):
         self.tag = tag
         self.value = value
         self.children = children
         self.props = props
         self.indents = indents
         self.inline = inline
+        self.self_closing = self_closing
 
     def to_html(self):
         raise NotImplementedError
@@ -23,8 +24,8 @@ class HTMLNode():
         return f"HTMLNode(tag={self.tag}, value={self.value}, children={self.children}, props={self.props})"
     
 class LeafNode(HTMLNode):
-    def __init__(self, tag, value, props=None, indents=[0,0], inline=False):
-        super(LeafNode, self).__init__(tag, value, None, props, indents, inline)
+    def __init__(self, tag, value, props=None, indents=[0,0], inline=False, self_closing=False):
+        super(LeafNode, self).__init__(tag, value, None, props, indents, inline, self_closing)
     
     def to_html(self):
         if self.value is None:
@@ -37,7 +38,10 @@ class LeafNode(HTMLNode):
         else:
             if not self.tag:
                 return self.value
-            return  f"{leading_spaces(self.indents)}<{self.tag}{html_props}>{self.value}</{self.tag}>\n"
+            if not self.self_closing:
+                return f"{leading_spaces(self.indents)}<{self.tag}{html_props}>{self.value}</{self.tag}>\n"
+            else:
+                return f"{leading_spaces(self.indents)}<{self.tag}{html_props}>{self.value}\n"
     
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None, indents=[0,0], inline=False):

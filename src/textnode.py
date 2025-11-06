@@ -9,6 +9,7 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
     QUOTE = "quote"
+    HORIZONTAL_LINE = "horizontal_line"
 
 class TextNode():
     def __init__(self, text, text_type, url=None):
@@ -50,3 +51,6 @@ def text_node_to_html_node(node, indents=[0,0]):
     
     if node.text_type == TextType.IMAGE:
         return LeafNode("img", "", {"src": node.url, "alt": node.text}, indents, inline=True)
+    
+    if node.text_type == TextType.HORIZONTAL_LINE:
+        return LeafNode("hr", "", indents=indents, self_closing=True)
