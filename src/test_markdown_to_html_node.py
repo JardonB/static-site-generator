@@ -14,7 +14,7 @@ This is another paragraph with _italic_ text and `code` here
 
         node = markdown_to_html_node(md)
         html = node.to_html()
-        expected_result = "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>"
+        expected_result = "<div>\n<p>\nThis is <b>bolded</b> paragraph text in a p tag here\n</p>\n<p>\nThis is another paragraph with <i>italic</i> text and <code>code</code> here\n</p>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_codeblock(self):
@@ -27,7 +27,7 @@ the **same** even with inline stuff
 
         node = markdown_to_html_node(md)
         html = node.to_html()
-        expected_result = "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>"
+        expected_result = "<div>\n<pre>\n<code>\nThis is text that _should_ remain\nthe **same** even with inline stuff\n</code>\n</pre>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_quoteblock(self):
@@ -37,7 +37,7 @@ the **same** even with inline stuff
 >quoteblock
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><blockquote>This\nis a\nquoteblock</blockquote></div>"
+        expected_result = "<div>\n<blockquote>\nThis\nis a\nquoteblock\n</blockquote>\n</div>\n"
         self.assertEqual(html, expected_result)
         
     def test_ul(self):
@@ -47,7 +47,7 @@ the **same** even with inline stuff
 - Three
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><ul><li>One</li><li>Two</li><li>Three</li></ul></div>"
+        expected_result = "<div>\n<ul>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ul>\n</div>\n"
         self.assertEqual(html, expected_result)
               
     def test_ul_inline_md(self):
@@ -57,7 +57,7 @@ the **same** even with inline stuff
 - **Three**
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><ul><li>One</li><li><i>Two</i></li><li><b>Three</b></li></ul></div>"
+        expected_result = "<div>\n<ul>\n<li>One</li>\n<li><i>Two</i></li>\n<li><b>Three</b></li>\n</ul>\n</div>\n"
         self.assertEqual(html, expected_result)
         
     def test_ol(self):
@@ -67,7 +67,7 @@ the **same** even with inline stuff
 3. Three
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><ol><li>One</li><li>Two</li><li>Three</li></ol></div>"
+        expected_result = "<div>\n<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>\n</div>\n"
         self.assertEqual(html, expected_result)
             
     def test_ol_inline_md(self):
@@ -77,7 +77,7 @@ the **same** even with inline stuff
 3. **Three**
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><ol><li>One</li><li><i>Two</i></li><li><b>Three</b></li></ol></div>"
+        expected_result = "<div>\n<ol>\n<li>One</li>\n<li><i>Two</i></li>\n<li><b>Three</b></li>\n</ol>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading(self):
@@ -85,7 +85,7 @@ the **same** even with inline stuff
 # Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h1>Heading</h1></div>"
+        expected_result = "<div>\n<h1>Heading</h1>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading2(self):
@@ -93,7 +93,7 @@ the **same** even with inline stuff
 ## Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h2>Heading</h2></div>"
+        expected_result = "<div>\n<h2>Heading</h2>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading3(self):
@@ -101,7 +101,7 @@ the **same** even with inline stuff
 ### Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h3>Heading</h3></div>"
+        expected_result = "<div>\n<h3>Heading</h3>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading4(self):
@@ -109,7 +109,7 @@ the **same** even with inline stuff
 #### Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h4>Heading</h4></div>"
+        expected_result = "<div>\n<h4>Heading</h4>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading5(self):
@@ -117,7 +117,7 @@ the **same** even with inline stuff
 ##### Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h5>Heading</h5></div>"
+        expected_result = "<div>\n<h5>Heading</h5>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_heading6(self):
@@ -125,7 +125,7 @@ the **same** even with inline stuff
 ###### Heading
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h6>Heading</h6></div>"
+        expected_result = "<div>\n<h6>Heading</h6>\n</div>\n"
         self.assertEqual(html, expected_result)
 
     def test_multi_type(self):
@@ -142,5 +142,5 @@ code
 ```
 """
         html = markdown_to_html_node(md).to_html()
-        expected_result = "<div><h6>Heading</h6><blockquote>This is a <i>very</i>\ndeep quote</blockquote><h3>Heading</h3><pre><code>code\n</code></pre></div>"
+        expected_result = "<div>\n<h6>Heading</h6>\n<blockquote>\nThis is a <i>very</i>\ndeep quote\n</blockquote>\n<h3>Heading</h3>\n<pre>\n<code>\ncode\n</code>\n</pre>\n</div>\n"
         self.assertEqual(html, expected_result)

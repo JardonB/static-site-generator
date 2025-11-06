@@ -29,16 +29,16 @@ class TestHTMLNode(unittest.TestCase):
 
 class TestLeafNode(unittest.TestCase):
     def test_leaf_to_html_p(self):
-        node = LeafNode("p", "Hello, world!")
+        node = LeafNode("p", "Hello, world!", inline=True)
         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
     def test_leaf_to_html_nonstandard_tag(self):
-        node = LeafNode("span", "Hello, world!")
+        node = LeafNode("span", "Hello, world!", inline=True)
         self.assertEqual(node.to_html(), "<span>Hello, world!</span>")
     
     def test_leaf_to_html_a(self):
         node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
-        self.assertEqual(node.to_html(), '<a href="https://www.google.com">Click me!</a>')
+        self.assertEqual(node.to_html(), '<a href="https://www.google.com">Click me!</a>\n')
 
     def test_leaf_to_html_plain_text(self):
         node = LeafNode(None, "Plain text")
@@ -50,14 +50,14 @@ class TestLeafNode(unittest.TestCase):
 
     def test_leaf_to_html_empty_props(self):
         node = LeafNode("p", "Hello, world!", {})
-        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>\n")
     
     def test_leaf_to_html_empty_value(self):
         node = LeafNode("p", "")
-        self.assertEqual(node.to_html(),"<p></p>")
+        self.assertEqual(node.to_html(),"<p></p>\n")
 
     def test_leaf_to_html_nonstring_value(self):
-        node = LeafNode("p", 8)
+        node = LeafNode("p", 8, inline=True)
         self.assertEqual(node.to_html(), "<p>8</p>")
 
 class TestParentNode(unittest.TestCase):
@@ -65,13 +65,14 @@ class TestParentNode(unittest.TestCase):
         node = ParentNode(
             "p",
             [
-                LeafNode("b", "Bold text"),
-                LeafNode(None, "Normal text"),
-                LeafNode("i", "italic text"),
-                LeafNode(None, "Normal text"),
+                LeafNode("b", "Bold text", inline=True),
+                LeafNode(None, "Normal text", inline=True),
+                LeafNode("i", "italic text", inline=True),
+                LeafNode(None, "Normal text", inline=True),
             ],
+            inline=True
         )
-        expected_result = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
+        expected_result = "<p>\n<b>Bold text</b>Normal text<i>italic text</i>Normal text\n</p>\n"
         self.assertEqual(node.to_html(), expected_result)
 
     def test_nested_parent(self):
@@ -83,14 +84,14 @@ class TestParentNode(unittest.TestCase):
                 ParentNode(
                     "i",
                     [
-                        LeafNode(None, "italic text1"),
-                        LeafNode(None, "italic text2"),
+                        LeafNode(None, "italic text1", inline=True),
+                        LeafNode(None, "italic text2", inline=True),
                     ]
                 ),
                 LeafNode(None, "Normal text"),
             ],
         )
-        expected_result = "<p><b>Bold text</b>Normal text<i>italic text1italic text2</i>Normal text</p>"
+        expected_result = "<p>\n<b>Bold text</b>\nNormal text<i>\nitalic text1italic text2\n</i>\nNormal text\n</p>\n"
         self.assertEqual(node.to_html(), expected_result)
 
     def test_deep_nested_parent(self):
@@ -106,13 +107,13 @@ class TestParentNode(unittest.TestCase):
                             "google.com",
                             {
                                 "href": "google.com"
-                            }
-                        )
-                    )
+                            }, inline=True
+                        ), inline=True
+                    ), inline=True
                 )
-            ],
+            ], inline=True
         )
-        expected_result = '<p><b><i><a href="google.com">google.com</a></i></b></p>'
+        expected_result = '<p>\n<b><i><a href="google.com">google.com</a></i></b>\n</p>\n'
         self.assertEqual(node.to_html(), expected_result)
 
     def test_no_tag(self):
@@ -140,38 +141,41 @@ class TestParentNode(unittest.TestCase):
                 LeafNode(None, "Bold text")
             ]
         )
-        self.assertEqual(node.to_html(), "<b>Bold text</b>")
+        self.assertEqual(node.to_html(), "<b>\nBold text\n</b>\n")
 
     def test_mixed_tagged_children(self):
         node = ParentNode(
             "b",
             [
-                LeafNode(None, "Bold text"),
-                LeafNode("i", "Bold and italic text")
-            ]
+                LeafNode(None, "Bold text", inline=True),
+                LeafNode("i", "Bold and italic text", inline=True)
+            ], 
+            inline=True
         )
-        self.assertEqual(node.to_html(), "<b>Bold text<i>Bold and italic text</i></b>")
+        self.assertEqual(node.to_html(), "<b>Bold text<i>Bold and italic text</i></b>\n")
 
     def test_parent_to_html_props(self):
         node = ParentNode(
             "p",
             [
-                LeafNode("b", "Bold text"),
-                LeafNode(None, "Normal text"),
+                LeafNode("b", "Bold text", inline=True),
+                LeafNode(None, "Normal text", inline=True),
                 ParentNode(
                     "i",
                     [
-                        LeafNode(None, "italic text1"),
-                        LeafNode(None, "italic text2"),
-                    ]
+                        LeafNode(None, "italic text1", inline=True),
+                        LeafNode(None, "italic text2", inline=True),
+                    ],
+                    inline=True
                 ),
-                LeafNode(None, "Normal text"),
+                LeafNode(None, "Normal text", inline=True),
             ],
             props={
                 "style": "text-align:right",
-            }
+            },
+            inline=True
         )
-        expected_result = '<p style="text-align:right"><b>Bold text</b>Normal text<i>italic text1italic text2</i>Normal text</p>'
+        expected_result = '<p style="text-align:right">\n<b>Bold text</b>Normal text<i>italic text1italic text2</i>\nNormal text\n</p>\n'
         self.assertEqual(node.to_html(), expected_result)
 
     def test_single_child_direct(self):
@@ -179,7 +183,7 @@ class TestParentNode(unittest.TestCase):
             "b",
             LeafNode(None, "Bold text")
         )
-        self.assertEqual(node.to_html(), "<b>Bold text</b>")
+        self.assertEqual(node.to_html(), "<b>\nBold text\n</b>\n")
 
     def test_whitespace_preservation(self):
         node = ParentNode(
@@ -189,7 +193,7 @@ class TestParentNode(unittest.TestCase):
                 LeafNode("i", " text ")
             ]
         )
-        self.assertEqual(node.to_html(), "<b><i> </i><i> text </i></b>")
+        self.assertEqual(node.to_html(), "<b>\n<i> </i>\n<i> text </i>\n</b>\n")
 
     def test_multiple_props(self):
         node = ParentNode(
@@ -198,9 +202,10 @@ class TestParentNode(unittest.TestCase):
             {
                 "one": "1",
                 "two": "2"
-            }
+            }, 
+            inline=True
         )
-        self.assertEqual(node.to_html(), '<b one="1" two="2">Bold text</b>')
+        self.assertEqual(node.to_html(), '<b one="1" two="2">Bold text</b>\n')
     
 class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_text(self):
@@ -222,31 +227,31 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         node = TextNode("bold text", TextType.BOLD)
         html_node = text_node_to_html_node(node)
         expected_result = LeafNode("b", "bold text")
-        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+        self.assertEqual(html_node.to_html()+"\n", expected_result.to_html()) # type: ignore
     
     def test_italic(self):
         node = TextNode("italic text", TextType.ITALIC)
         html_node = text_node_to_html_node(node)
         expected_result = LeafNode("i", "italic text")
-        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+        self.assertEqual(html_node.to_html()+"\n", expected_result.to_html()) # type: ignore
     
     def test_code(self):
         node = TextNode("code text", TextType.CODE)
         html_node = text_node_to_html_node(node)
         expected_result = LeafNode("code", "code text")
-        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+        self.assertEqual(html_node.to_html()+"\n", expected_result.to_html()) # type: ignore
     
     def test_link(self):
         node = TextNode("anchor text", TextType.LINK, "google.com")
         html_node = text_node_to_html_node(node)
         expected_result = LeafNode("a", "anchor text", {"href": "google.com"})
-        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+        self.assertEqual(html_node.to_html()+"\n", expected_result.to_html()) # type: ignore
     
     def test_image(self):
         node = TextNode("an image", TextType.IMAGE, "image.jpg")
         html_node = text_node_to_html_node(node)
         expected_result = LeafNode("img", "", {"src":"image.jpg", "alt":"an image"})
-        self.assertEqual(html_node.to_html(), expected_result.to_html()) # type: ignore
+        self.assertEqual(html_node.to_html()+"\n", expected_result.to_html()) # type: ignore
 
 if __name__ == "__main__":
     unittest.main()
