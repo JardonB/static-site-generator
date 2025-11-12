@@ -11,8 +11,10 @@ logging.basicConfig(
     filemode="w"
 )
 
-def generate_page(from_path, template_path, dest_path, base_path, indents = [0, 0]):
+def generate_page(from_path, template_path, dest_path, base_path, indents = [0, 0], verbose=False):
     logging.info(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    if verbose:
+        print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     markdown, template = "", ""
 
     with open(from_path, 'r', encoding="utf-8") as f:
@@ -37,7 +39,7 @@ def generate_page(from_path, template_path, dest_path, base_path, indents = [0, 
     with open(dest_path, "w") as f:
         f.write(html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path, indents = [0, 0]):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path, indents = [0, 0], verbose=False):
     contents = os.listdir(dir_path_content)
     for item in contents:
         file_path = os.path.join(dir_path_content, item)
@@ -45,9 +47,9 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
         if os.path.isfile(file_path):
             if file_path.endswith(".md"):
                 dest_path = os.path.join(dest_dir_path, (f"{item.split(".")[0]}.html"))
-                generate_page(file_path, template_path, dest_path, base_path, indents)
+                generate_page(file_path, template_path, dest_path, base_path, indents, verbose)
         else:
-            generate_pages_recursive(file_path, template_path, dest_path, base_path, indents)
+            generate_pages_recursive(file_path, template_path, dest_path, base_path, indents, verbose)
     
 def extract_title(markdown):
     md_lines = markdown.splitlines()
