@@ -3,12 +3,16 @@ from copy_static import copy_static
 from generate_content import generate_pages_recursive, extract_template_indents
 from htmlnode import leading_spaces
 
+# Configuration
 dest_path = "docs"
 static_path = "static"
 content_path = "content"
 template_path = "template.html" 
 base_path = "/"
+
+# Indent settings
 template_indents = extract_template_indents(template_path)
+
 verbose = False
 
 if len(sys.argv) >= 2:
