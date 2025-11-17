@@ -1,7 +1,6 @@
 body {
-  background-color: #1f1c25;
-  color: #f0e6d1;
-  font-family: "Luminari", "Georgia", serif;
+  background-color: #454e64;
+  color: #ffffff;
   line-height: 1.7;
   margin: 0;
   padding: 20px;
@@ -20,7 +19,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #dda15e;
+  color: #f4a261;
   margin-top: 24px;
   margin-bottom: 16px;
   text-shadow: 2px 2px 4px #000;
@@ -45,9 +44,9 @@ h6 {
 }
 
 a {
-  color: #e0a96d;
+  color: #f4a261;
   text-decoration: none;
-  border-bottom: 2px solid #e0a96d;
+  border-bottom: 2px solid #f4a261;
 }
 
 a:hover {

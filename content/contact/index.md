@@ -1,9 +1,7 @@
-# Contact the Author
+# static-site-generator/contact
 
-[< Back Home](/)
+## [Home](/) [About](/about/) [Plumbing](/plumbing/) [Contact](/contact/)
 
-Give me a call anytime to chat about Tolkien!
+This will be updated in the future with a way to contact me about this project.
 
-`555-555-5555`
-
-**"Váya márië."**
+For now the best way to reach out to me is via email at `jordan.breitling@gmail.com`

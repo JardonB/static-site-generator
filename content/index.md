@@ -1,46 +1,51 @@
-# Tolkien Fan Club
+# static-site-generator
 
-![JRR Tolkien sitting](/images/tolkien.png)
+## [Home](/) [About](/about/) [Plumbing](/plumbing/) [Contact](/contact/)
 
-Here's the deal, **I like Tolkien**.
+This is a static site generator based on the [boot.dev](https://www.boot.dev) [static site generator](https://www.boot.dev/courses/build-static-site-generator-python) project
 
-> "I am in fact a Hobbit in all but size."
->
-> -- J.R.R. Tolkien
+## Usage
 
-## Blog posts
+This project contains two bash files, `main.sh` and `build.sh`
 
-- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)
-- [Why Tom Bombadil Was a Mistake](/blog/tom)
-- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
+#### **_main.sh_**
 
-## Reasons I like Tolkien
+- Copies the content from the static folder
+- Generates the site based on the files in the content directory
+- Opens an http server on port 8888
 
-- You can spend years studying the legendarium and still not understand its depths
-- It can be enjoyed by children and adults alike
-- Disney _didn't ruin it_ (okay, but Amazon might have)
-- It created an entirely new genre of fantasy
+#### **_build.sh_**
 
-## My favorite characters (in order)
+- Contains a base path variable for the base path of the site
+- Generates the site using the base path
 
-1. Gandalf
-2. Bilbo
-3. Sam
-4. Glorfindel
-5. Galadriel
-6. Elrond
-7. Thorin
-8. Sauron
-9. Aragorn
-
-Here's what `elflang` looks like (the perfect coding language):
+## Structure
 
 ```
-func main(){
-    fmt.Println("Aiya, Ambar!")
-}
+static-site-generator
+>content        --main directory of the site, this is where the markdown files go :)
+->index.md      --homepage content
+->subdirectory  --additional page directory
+-->index.md     --additional page content
+>static         --directory for all of the static site content, such as images, stylesheets, etc
+>docs           --generated content will appear within this directory
+>src            --program source code files
 ```
 
-Want to get in touch? [Contact me here](/contact).
+## Configuration
 
-This site was generated with a custom-built [static site generator](https://www.boot.dev/courses/build-static-site-generator-python) from the course on [Boot.dev](https://www.boot.dev).
+### **main.sh**
+
+```
+PORT=8888                         #the port that the http server will run on
+basepath = "/"                    #the "base" filepath, or the base directory for the website, used to generate links
+```
+
+### **main.py**
+
+```
+dest_path = "docs"                #filepath for where the generated content should be created
+static_path = "static"            #filepath where the static site content is located
+content_path = "content"          #filepath where the site content is located
+template_path = "template.html"   #filepath of the template file
+```

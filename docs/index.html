@@ -3,66 +3,63 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tolkien Fan Club</title>
-    <link href="/static-site-generator/index.css" rel="stylesheet" />
+    <title>static-site-generator</title>
+    <link href="/index.css" rel="stylesheet" />
   </head>
 
   <body>
     <article>
       <div>
-        <h1>Tolkien Fan Club</h1>
+        <h1>static-site-generator</h1>
+        <h2><a href="/">Home</a> <a href="/about/">About</a> <a href="/plumbing/">Plumbing</a> <a href="/contact/">Contact</a></h2>
         <p>
-          <img src="/static-site-generator/images/tolkien.png" alt="JRR Tolkien sitting"></img>
+          This is a static site generator based on the <a href="https://www.boot.dev">boot.dev</a> <a href="https://www.boot.dev/courses/build-static-site-generator-python">static site generator</a> project
         </p>
+        <h2>Usage</h2>
         <p>
-          Here's the deal, <b>I like Tolkien</b>.
+          This project contains two bash files, <code>main.sh</code> and <code>build.sh</code>
         </p>
-        <blockquote>
-"I am in fact a Hobbit in all but size."
-
--- J.R.R. Tolkien
-        </blockquote>
-        <h2>Blog posts</h2>
+        <h4><i>main.sh</i></h4>
         <ul>
-          <li><a href="/static-site-generator/blog/glorfindel">Why Glorfindel is More Impressive than Legolas</a></li>
-          <li><a href="/static-site-generator/blog/tom">Why Tom Bombadil Was a Mistake</a></li>
-          <li><a href="/static-site-generator/blog/majesty">The Unparalleled Majesty of "The Lord of the Rings"</a></li>
+          <li>Copies the content from the static folder</li>
+          <li>Generates the site based on the files in the content directory</li>
+          <li>Opens an http server on port 8888</li>
         </ul>
-        <h2>Reasons I like Tolkien</h2>
+        <h4><i>build.sh</i></h4>
         <ul>
-          <li>You can spend years studying the legendarium and still not understand its depths</li>
-          <li>It can be enjoyed by children and adults alike</li>
-          <li>Disney <i>didn't ruin it</i> (okay, but Amazon might have)</li>
-          <li>It created an entirely new genre of fantasy</li>
+          <li>Contains a base path variable for the base path of the site</li>
+          <li>Generates the site using the base path</li>
         </ul>
-        <h2>My favorite characters (in order)</h2>
-        <ol>
-          <li>Gandalf</li>
-          <li>Bilbo</li>
-          <li>Sam</li>
-          <li>Glorfindel</li>
-          <li>Galadriel</li>
-          <li>Elrond</li>
-          <li>Thorin</li>
-          <li>Sauron</li>
-          <li>Aragorn</li>
-        </ol>
-        <p>
-          Here's what <code>elflang</code> looks like (the perfect coding language):
-        </p>
+        <h2>Structure</h2>
         <pre>
           <code>
-func main(){
-    fmt.Println("Aiya, Ambar!")
-}
+static-site-generator
+>content        --main directory of the site, this is where the markdown files go :)
+->index.md      --homepage content
+->subdirectory  --additional page directory
+-->index.md     --additional page content
+>static         --directory for all of the static site content, such as images, stylesheets, etc
+>docs           --generated content will appear within this directory
+>src            --program source code files
           </code>
         </pre>
-        <p>
-          Want to get in touch? <a href="/static-site-generator/contact">Contact me here</a>.
-        </p>
-        <p>
-          This site was generated with a custom-built <a href="https://www.boot.dev/courses/build-static-site-generator-python">static site generator</a> from the course on <a href="https://www.boot.dev">Boot.dev</a>.
-        </p>
+        <h2>Configuration</h2>
+        <h3><b>main.sh</b></h3>
+        <pre>
+          <code>
+PORT=8888                         #the port that the http server will run on
+basepath = "/"                    #the "base" filepath, or the base directory for the website, used to generate links
+          </code>
+        </pre>
+        <h3><b>main.py</b></h3>
+        <pre>
+          <code>
+dest_path = "docs"                #filepath for where the generated content should be created
+static_path = "static"            #filepath where the static site content is located
+content_path = "content"          #filepath where the site content is located
+template_path = "template.html"   #filepath of the template file
+          </code>
+        </pre>
       </div>
     </article>
   </body>
