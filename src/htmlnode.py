@@ -13,7 +13,7 @@ class HTMLNode():
     
     def props_to_html(self):
         if self.props and not isinstance(self.props, dict):
-            raise ValueError("props must be a dictionary")
+            raise ValueError("props must be a dictionary\n\tProblem node: {self}")
         re_string = "" #return string
         if self.props:
             for prop in self.props.keys():
@@ -54,20 +54,20 @@ class ParentNode(HTMLNode):
 
     def to_html(self):
         if not self.tag:
-            raise ValueError("All parent nodes must have a tag")
+            raise ValueError("All parent nodes must have a tag\n\tProblem node: {self}")
         if not self.children:
-            raise ValueError("All parent nodes must have a child")
+            raise ValueError(f"All parent nodes must have a child\n\tProblem node: {self}")
         if not isinstance(self.children, list):
-            raise ValueError("children must be a list of HTMLNode instances")
+            raise ValueError("children must be a list of HTMLNode instances\n\tProblem node: {self}")
         if not all(isinstance(c, HTMLNode) for c in self.children):
-            raise ValueError("All children must be instances of HTMLNode")
+            raise ValueError("All children must be instances of HTMLNode\n\tProblem node: {self}")
         
         inner_html = ""
         html_props = self.props_to_html()
         for child in self.children:
             child.indents = [self.indents[0], self.indents[1] + 1] #Child should use the same indent spacing and be indented one level deeper
             if not isinstance(child, HTMLNode):
-                raise ValueError("children must be nodes")
+                raise ValueError("All children must be instances of HTMLNode\n\tProblem node: {self}\n\tInvalid child: {child}")
             inner_html += child.to_html()
         if inner_html.endswith("\n"):
             inner_html = inner_html[:-1]
