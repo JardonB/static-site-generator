@@ -9,17 +9,25 @@ def text_to_textnodes(text):
     node_list = split_nodes_images(node_list)
 
     #split other text types
-    node_list = split_nodes_delimiter(node_list, "**", TextType.BOLD)
-    node_list = split_nodes_delimiter(node_list, "_", TextType.ITALIC)
-    node_list = split_nodes_delimiter(node_list, "`", TextType.CODE)
-    node_list = split_nodes_delimiter(node_list, "---", TextType.HORIZONTAL_LINE, match_req=False)
+    type_dict = {"**": TextType.BOLD, 
+                 "_": TextType.ITALIC, 
+                 "`": TextType.CODE, 
+                 "---": TextType.HORIZONTAL_LINE}
+    order_dict = {text.find("**"): "**",
+                text.find("_"): "_",
+                text.find("`"): "`",
+                text.find("---"): "---"
+                }
+    for item in sorted(order_dict.items()):
+        if item[0] != -1:
+            node_list = split_nodes_delimiter(node_list, item[1], type_dict[item[1]])
 
     return node_list
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type, match_req=True):
     node_list = []
     for node in old_nodes:
-        if not node.text_type == TextType.TEXT:
+        if not node.text_type == TextType.TEXT and len(node.text.split(delimiter))==1:
             node_list.append(node)
         else:
             parts = node.text.split(delimiter)
@@ -27,7 +35,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type, match_req=True):
             if len(parts) == 1:
                 node_list.append(node)
                 continue
-            elif len(parts) % 2 == 0 and match_req:
+            elif (len(parts) % 2 == 0 and match_req) and not (node.text.startswith(delimiter) and node.text.endswith(delimiter)):
                 raise Exception(f"for node: {node} unmatched delimiter: {delimiter}")
 
             if match_req:
