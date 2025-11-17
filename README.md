@@ -20,7 +20,7 @@ This project contains two bash files, `main.sh` and `build.sh`
 ┃┗subdirectory  _--additional page directory_
 ┃ ┗index.md     _--additional page content_
 ┣static         _--directory for all of the static site content, such as images, stylesheets, etc_
-┣docs           _--generated content will appear within this directory
+┣docs           _--generated content will appear within this directory_
 ┗src            _--program source code files_
 
 ## Configuration
